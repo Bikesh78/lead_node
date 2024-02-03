@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { IsEmail } from "class-validator";
+import type { Interaction } from "./interaction";
 
 type LeadStatus = "new" | "contacted" | "qualified" | "lost"
 type Source = "web" | "referral" | "partner"
@@ -24,4 +25,8 @@ export class Lead {
 
   @CreateDateColumn()
   added_Date: Date
+
+  @OneToMany("Interaction",(interaction:Interaction)=>interaction.lead)
+  interaction:Interaction[]
+  
 }
