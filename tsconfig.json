@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "lib": [
+      "es2015"
+    ],
+    "experimentalDecorators": true ,
+    "emitDecoratorMetadata": true ,
+    "module": "nodenext" ,
+    "outDir": "./dist" ,
+    "esModuleInterop": true ,
+    "moduleResolution": "node16",
+    "forceConsistentCasingInFileNames": true ,
+    "strict": true ,
+    "strictPropertyInitialization": false ,
+    "skipLibCheck": true ,
+  }
+}
