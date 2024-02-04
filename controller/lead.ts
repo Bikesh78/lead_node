@@ -1,6 +1,7 @@
 import { NextFunction, Response, Request } from "express";
 import { Lead, LeadStatus, Source } from "../entity/lead";
 import { validate } from "class-validator";
+import { Between } from "typeorm";
 
 interface LeadBody {
   name: string;
@@ -15,8 +16,38 @@ export const getLead = async (
   next: NextFunction,
 ) => {
   try {
-    const lead = await Lead.find();
-    res.json({ data: lead });
+    const addedDate = req.query.added_date as string;
+    const paginate = Number(req.query.paginate);
+    const page = Number(req.query.page);
+    const limit = Number(req.query.limit);
+    const skip = (page - 1) * limit;
+
+    let where: any = {};
+    if (addedDate) {
+      const startDate = new Date(addedDate);
+      const endDate = new Date(addedDate);
+      endDate.setDate(endDate.getDate() + 1);
+      where.added_date = Between(startDate, endDate);
+    }
+
+    // let paginationOption: any = {};
+    // if (paginate === 1) {
+    //   paginationOption.take = limit;
+    //   paginationOption.skip = skip;
+    // }
+
+    const [lead, total] = await Lead.findAndCount({
+      where,
+      // ...paginationOption,
+      take: limit,
+      skip,
+    });
+
+    res.json({
+      data: lead,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (error) {
     next(error);
   }
