@@ -15,7 +15,7 @@ const options: DataSourceOptions = {
   // entities: ["entity/**/*.ts"],
   entities: [User, Lead, Interaction],
   synchronize: false,
-  logging: true,
+  logging: false,
   migrations: ["migration/**/*.ts"],
 };
 
