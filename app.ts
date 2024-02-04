@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import { authRouter } from "./routes";
+import { errorHandler } from "./utils/middleware";
 
 const app = express();
 
@@ -10,8 +12,9 @@ app.use(express.json());
 
 app.use(morgan("tiny"));
 
+app.use("/api",authRouter)
 
 
-// app.use(errorHandler);
+app.use(errorHandler);
 
-export default app;
+export default app; 
