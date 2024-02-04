@@ -1,6 +1,7 @@
 import { DataSource, DataSourceOptions } from "typeorm";
 import "reflect-metadata";
 import { DB_PASSWORD, DB_USER } from "./config";
+import { User } from "../entity/user";
 
 const options: DataSourceOptions = {
   type: "postgres",
@@ -9,7 +10,8 @@ const options: DataSourceOptions = {
   password: DB_PASSWORD,
   database: "lead",
   port: 5432,
-  entities: ["entity/**/*.ts"],
+  // entities: ["entity/**/*.ts"],
+  entities: [User],
   synchronize: false,
   logging: false,
   migrations: ["migration/**/*.ts"],
