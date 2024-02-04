@@ -1,4 +1,7 @@
 import { NextFunction, Request, Response, ErrorRequestHandler } from "express";
+import jwt from "jsonwebtoken";
+import { TOKEN_SECRET } from "./config";
+import { User } from "../entity/user";
 
 export const errorHandler = async (
   // err: ErrorRequestHandler,
@@ -22,3 +25,32 @@ export const errorHandler = async (
   }
 };
 
+
+interface TokenData {
+  id: number;
+  username: string
+}
+
+export const authMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const authorization = req.get("Authorization");
+
+  const token = authorization?.startsWith("Bearer ")
+    ? authorization?.replace("Bearer ", "")
+    : "";
+
+  const decodedToken: TokenData = jwt.verify(token, TOKEN_SECRET) as TokenData;
+
+  if (!decodedToken.id) {
+    return res.status(401).json({ error: "Invalid token" });
+  }
+
+  const user = (await User.findOneBy({ id: decodedToken.id })) as User;
+
+  req.user = user;
+
+  next();
+};
