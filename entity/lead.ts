@@ -9,8 +9,8 @@ import {
 import { IsEmail } from "class-validator";
 import type { Interaction } from "./interaction";
 
-type LeadStatus = "New" | "Contacted" | "Qualified" | "Lost";
-type Source = "Web" | "Referral" | "Partner";
+export type LeadStatus = "New" | "Contacted" | "Qualified" | "Lost";
+export type Source = "Web" | "Referral" | "Partner";
 
 @Entity()
 export class Lead extends BaseEntity {

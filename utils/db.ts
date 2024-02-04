@@ -2,6 +2,8 @@ import { DataSource, DataSourceOptions } from "typeorm";
 import "reflect-metadata";
 import { DB_PASSWORD, DB_USER } from "./config";
 import { User } from "../entity/user";
+import { Lead } from "../entity/lead";
+import { Interaction } from "../entity/interaction";
 
 const options: DataSourceOptions = {
   type: "postgres",
@@ -11,9 +13,9 @@ const options: DataSourceOptions = {
   database: "lead",
   port: 5432,
   // entities: ["entity/**/*.ts"],
-  entities: [User],
+  entities: [User, Lead, Interaction],
   synchronize: false,
-  logging: false,
+  logging: true,
   migrations: ["migration/**/*.ts"],
 };
 
@@ -27,4 +29,3 @@ export const connectToDatabase = async () => {
     console.error("Unable to connect to the database:", error);
   }
 };
-

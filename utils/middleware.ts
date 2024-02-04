@@ -8,7 +8,7 @@ export const errorHandler = async (
   err: any,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     console.log("err handler", err);
@@ -25,16 +25,23 @@ export const errorHandler = async (
   }
 };
 
-
 interface TokenData {
   id: number;
-  username: string
+  username: string;
+}
+
+declare global {
+  namespace Express {
+    export interface Request {
+      user?: User;
+    }
+  }
 }
 
 export const authMiddleware = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const authorization = req.get("Authorization");
 
@@ -51,6 +58,7 @@ export const authMiddleware = async (
   const user = (await User.findOneBy({ id: decodedToken.id })) as User;
 
   req.user = user;
+  // req.user = user;
 
   next();
 };
