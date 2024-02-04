@@ -35,7 +35,7 @@ export class Lead extends BaseEntity {
   source: Source;
 
   @CreateDateColumn()
-  added_Date: Date;
+  added_date: Date;
 
   @OneToMany("Interaction", (interaction: Interaction) => interaction.lead)
   interaction: Interaction[];
