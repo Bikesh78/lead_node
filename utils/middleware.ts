@@ -43,22 +43,28 @@ export const authMiddleware = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const authorization = req.get("Authorization");
+  try {
+    const authorization = req.get("Authorization");
 
-  const token = authorization?.startsWith("Bearer ")
-    ? authorization?.replace("Bearer ", "")
-    : "";
+    const token = authorization?.startsWith("Bearer ")
+      ? authorization?.replace("Bearer ", "")
+      : "";
 
-  const decodedToken: TokenData = jwt.verify(token, TOKEN_SECRET) as TokenData;
+    const decodedToken: TokenData = jwt.verify(
+      token,
+      TOKEN_SECRET,
+    ) as TokenData;
 
-  if (!decodedToken.id) {
-    return res.status(401).json({ error: "Invalid token" });
+    if (!decodedToken.id) {
+      return res.status(401).json({ error: "Invalid token" });
+    }
+
+    const user = (await User.findOneBy({ id: decodedToken.id })) as User;
+
+    req.user = user;
+
+    next();
+  } catch (error) {
+    next(error);
   }
-
-  const user = (await User.findOneBy({ id: decodedToken.id })) as User;
-
-  req.user = user;
-  // req.user = user;
-
-  next();
 };
