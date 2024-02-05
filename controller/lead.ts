@@ -2,7 +2,7 @@ import { NextFunction, Response, Request } from "express";
 import { Lead, LeadStatus, Source } from "../entity/lead";
 import { validate } from "class-validator";
 import { Between } from "typeorm";
-import { log } from "util";
+import { appDataSource } from "../utils/db";
 
 interface LeadBody {
   name: string;
@@ -130,6 +130,44 @@ export const deleteLead = async (
 
     await lead.remove();
     res.status(204).json({ message: "Successfully deleted lead", ...lead });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getLeadsPerSouce = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const lead = await appDataSource
+      .createQueryBuilder()
+      .select("lead.source, COUNT(*) ", "source_count")
+      .from(Lead, "lead")
+      .groupBy("lead.source")
+      .getRawMany();
+
+    res.json({ data: lead });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getLeadsPerStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const lead = await appDataSource
+      .createQueryBuilder()
+      .select("lead.lead_status, COUNT(*) ", "status_count")
+      .from(Lead, "lead")
+      .groupBy("lead.lead_status")
+      .getRawMany();
+
+    res.json({ data: lead });
   } catch (error) {
     next(error);
   }
