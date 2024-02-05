@@ -13,10 +13,10 @@ export const errorHandler = async (
   try {
     console.log("err handler", err);
     if (err.name === "QueryFailedError") {
-      return res.status(500).json({ error: err.message });
+      return res.status(400).json({ error: err.message });
     } else if (err[0]?.constructor?.name === "ValidationError") {
       return res.status(500).json({ error: err[0].constraints });
-    } else if (err.name === "JsonWebTokenError") {
+    } else if (err.name === "JsonWebTokenError" || err.name === "TokenExpiredError") {
       return res.status(400).json({ error: err.message });
     }
     return res.status(404).json({ error: "Endpoint not found" });
