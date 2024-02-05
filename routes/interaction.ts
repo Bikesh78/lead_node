@@ -1,8 +1,16 @@
-import express from "express"
-import { getInteraction } from "../controller/interaction"
+import express from "express";
+import {
+  addInteraction,
+  deleteInteraction,
+  getInteraction,
+  updateInteraction,
+} from "../controller/interaction";
 
-const router = express.Router()
+const router = express.Router();
 
-router.get("/",getInteraction)
+router.get("/", getInteraction);
+router.post("/", addInteraction);
+router.put("/:id", updateInteraction);
+router.delete("/:id", deleteInteraction);
 
-export {router as interactionRouter}
+export { router as interactionRouter };
