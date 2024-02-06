@@ -26,6 +26,9 @@ export const getInteraction = async (
         },
         take: limit,
         skip,
+        order: {
+          interaction_date: "DESC",
+        },
       });
 
       return res.json({
@@ -38,6 +41,9 @@ export const getInteraction = async (
     const interaction = await Interaction.find({
       relations: {
         lead: true,
+      },
+      order: {
+        interaction_date: "DESC",
       },
       // select: {
       //   lead: {

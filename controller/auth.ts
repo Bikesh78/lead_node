@@ -1,7 +1,7 @@
-import { NextFunction, Response, Request } from "express"
-import { User } from "../entity/user"
-import bcrypt from "bcrypt"
-import { validate } from "class-validator"
+import { NextFunction, Response, Request } from "express";
+import { User } from "../entity/user";
+import bcrypt from "bcrypt";
+import { validate } from "class-validator";
 import jwt from "jsonwebtoken";
 import { TOKEN_SECRET } from "../utils/config";
 
@@ -13,6 +13,7 @@ export const login = async (
   try {
     const body = req.body;
     const { username, password } = body;
+    console.log("usernae", username);
 
     const user = await User.findOne({
       where: {
@@ -24,7 +25,9 @@ export const login = async (
       return res.status(400).json({ error: "Invalid username or password" });
     }
     if (!(username && password)) {
-      return res.status(400).json({ error: "Username and password is required" });
+      return res
+        .status(400)
+        .json({ error: "Username and password is required" });
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
@@ -41,31 +44,38 @@ export const login = async (
 
     return res.json({
       message: "Successfully logged in",
-      ...userForToken, token: token,
+      ...userForToken,
+      token: token,
     });
   } catch (error) {
     next(error);
   }
 };
 
-export const signUp = async (req: Request, res: Response, next: NextFunction) => {
+export const signUp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    const body = req.body
-    const { username, password, confirm_password } = body
+    const body = req.body;
+    const { username, password, confirm_password } = body;
 
     if (!(username && password)) {
-      return res.status(400).json({ error: "Username and password fields cannot be empty" })
+      return res
+        .status(400)
+        .json({ error: "Username and password fields cannot be empty" });
     }
     if (password !== confirm_password) {
-      return res.status(400).json({ error: "Passwords do not match" })
+      return res.status(400).json({ error: "Passwords do not match" });
     }
 
-    const saltRound = 10
-    const passwordHash = await bcrypt.hash(password, saltRound)
+    const saltRound = 10;
+    const passwordHash = await bcrypt.hash(password, saltRound);
 
-    const user = new User()
-    user.username = username
-    user.password = passwordHash
+    const user = new User();
+    user.username = username;
+    user.password = passwordHash;
 
     // check for validation error
     const errors = await validate(user);
@@ -73,12 +83,12 @@ export const signUp = async (req: Request, res: Response, next: NextFunction) =>
       next(errors);
     }
 
-    await user.save()
+    await user.save();
 
-    const userCopy = { id: user.id, username: user.username }
+    const userCopy = { id: user.id, username: user.username };
 
-    res.status(201).json({ message: "User created successfully", ...userCopy })
+    res.status(201).json({ message: "User created successfully", ...userCopy });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};

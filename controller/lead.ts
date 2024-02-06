@@ -41,6 +41,9 @@ export const getLead = async (
         where,
         take: limit,
         skip,
+        order: {
+          added_date: "DESC",
+        },
       });
 
       return res.json({
@@ -50,7 +53,12 @@ export const getLead = async (
       });
     }
 
-    const lead = await Lead.find({ where });
+    const lead = await Lead.find({
+      where,
+      order: {
+        added_date: "DESC",
+      },
+    });
 
     res.json({ data: lead });
   } catch (error) {
