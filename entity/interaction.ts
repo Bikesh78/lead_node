@@ -9,7 +9,7 @@ import {
 } from "typeorm";
 import type { Lead } from "./lead";
 
-type InteractionType = "Email" | "Call" | "Meeting";
+export type InteractionType = "Email" | "Call" | "Meeting";
 
 @Entity()
 export class Interaction extends BaseEntity {

@@ -1,6 +1,6 @@
 import { NextFunction, Response, Request } from "express";
 import { validate } from "class-validator";
-import { Interaction } from "../entity/interaction";
+import { Interaction, InteractionType } from "../entity/interaction";
 import { Lead } from "../entity/lead";
 
 export const getInteraction = async (
@@ -60,20 +60,29 @@ export const getInteraction = async (
   }
 };
 
+interface InteractionBody {
+  lead_id: number;
+  interaction_type: InteractionType;
+}
+
 export const addInteraction = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const body = req.body;
+    const body: InteractionBody = req.body;
     const { lead_id, interaction_type } = body;
     const interaction = new Interaction();
     interaction.interaction_type = interaction_type;
 
-    const lead = await Lead.findOneBy({ id: lead_id });
-    if (!lead) {
-      return res.status(404).json({ error: `Lead ${lead_id} not found` });
+    const lead = await Lead.findOne({
+      where: {
+        id: lead_id,
+      },
+    });
+    if (!(lead_id && lead)) {
+      return res.status(404).json({ error: `Lead not found` });
     }
     if (lead?.lead_status === "New") {
       lead.lead_status = "Contacted";
@@ -154,11 +163,50 @@ export const getInteractionByLead = async (
   next: NextFunction,
 ) => {
   try {
+    const paginate = Number(req.query.paginate);
     const leadId = Number(req.params.lead_id);
 
     const lead = await Lead.findOneBy({ id: leadId });
-    if (!lead) {
+    if (!(leadId && lead)) {
       return res.status(404).json({ error: `Lead ${leadId} not found` });
+    }
+
+    let paginationOption: any = {};
+    if (paginate === 1) {
+      const page = Number(req.query.page) || 1;
+      const limit = Number(req.query.limit) || 10;
+      const skip = (page - 1) * limit;
+
+      paginationOption.take = limit;
+      paginationOption.skip = skip;
+
+      const [lead, total] = await Interaction.findAndCount({
+        where: {
+          lead: {
+            id: leadId,
+          },
+        },
+        relations: {
+          lead: true,
+        },
+        select: {
+          lead: {
+            id: true,
+            lead_name: true,
+          },
+        },
+        take: limit,
+        skip,
+        order: {
+          interaction_date: "DESC",
+        },
+      });
+
+      return res.json({
+        data: lead,
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+      });
     }
 
     const interaction = await Interaction.find({
@@ -167,9 +215,15 @@ export const getInteractionByLead = async (
           id: leadId,
         },
       },
-      // relations: {
-      //   lead: true,
-      // },
+      relations: {
+        lead: true,
+      },
+      select: {
+        lead: {
+          id: true,
+          lead_name: true,
+        },
+      },
     });
 
     res.json({ data: interaction });
