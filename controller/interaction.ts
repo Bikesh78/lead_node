@@ -147,3 +147,33 @@ export const deleteInteraction = async (
     next(error);
   }
 };
+
+export const getInteractionByLead = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const leadId = Number(req.params.lead_id);
+
+    const lead = await Lead.findOneBy({ id: leadId });
+    if (!lead) {
+      return res.status(404).json({ error: `Lead ${leadId} not found` });
+    }
+
+    const interaction = await Interaction.find({
+      where: {
+        lead: {
+          id: leadId,
+        },
+      },
+      // relations: {
+      //   lead: true,
+      // },
+    });
+
+    res.json({ data: interaction });
+  } catch (error) {
+    next(error);
+  }
+};
