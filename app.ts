@@ -11,13 +11,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(morgan("tiny"));
 
-app.use("/api", authRouter)
+app.use("/api", authRouter);
 
-app.use(authMiddleware)
+app.use(authMiddleware);
 
-app.use("/api/lead", leadRouter)
-app.use("/api/interaction", interactionRouter)
+app.use("/api/lead", leadRouter);
+app.use("/api/interaction", interactionRouter);
 
 app.use(errorHandler);
 
-export default app; 
+export default app;
