@@ -14,7 +14,7 @@ const options: DataSourceOptions = {
   port: 5432,
   // entities: ["entity/**/*.ts"],
   entities: [User, Lead, Interaction],
-  synchronize: false,
+  synchronize: true,
   logging: false,
   migrations: ["migration/**/*.ts"],
 };
