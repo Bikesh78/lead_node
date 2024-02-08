@@ -13,7 +13,6 @@ export const login = async (
   try {
     const body = req.body;
     const { username, password } = body;
-    console.log("usernae", username);
 
     const user = await User.findOne({
       where: {

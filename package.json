@@ -4,11 +4,11 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
     "start": "ts-node-esm index.ts",
     "dev:node": "nodemon -x ts-node-esm index.ts",
     "dev:bun": "bun --watch index.ts",
+    "test": "NODE_ENV=test jest --detectOpenHandles --runInBand",
     "migration:up": "npx typeorm-ts-node-esm migration:run  -d utils/db.ts",
     "migration:down": "npx typeorm-ts-node-esm migration:revert -d utils/db.ts",
     "migration:generate": "npx typeorm-ts-node-esm migration:generate  -d utils/db.ts"
@@ -20,10 +20,15 @@
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.11.16",
+    "@types/supertest": "^6.0.2",
+    "jest": "^29.7.0",
     "nodemon": "^3.0.3",
+    "supertest": "^6.3.4",
+    "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },

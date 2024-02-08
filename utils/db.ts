@@ -1,6 +1,6 @@
 import { DataSource, DataSourceOptions } from "typeorm";
 import "reflect-metadata";
-import { DB_HOST, DB_PASSWORD, DB_USER } from "./config";
+import { DB_HOST, DB_NAME, DB_PASSWORD, DB_USER } from "./config";
 import { User } from "../entity/user";
 import { Lead } from "../entity/lead";
 import { Interaction } from "../entity/interaction";
@@ -10,7 +10,7 @@ const options: DataSourceOptions = {
   host: DB_HOST,
   username: DB_USER,
   password: DB_PASSWORD,
-  database: "lead",
+  database: DB_NAME,
   port: 5432,
   // entities: ["entity/**/*.ts"],
   entities: [User, Lead, Interaction],
