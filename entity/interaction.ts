@@ -16,7 +16,7 @@ export class Interaction extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne("Lead", (lead: Lead) => lead.interaction)
+  @ManyToOne("Lead", (lead: Lead) => lead.interaction, { onDelete: "CASCADE" })
   @JoinColumn({ name: "lead_id" })
   lead: Lead;
 
